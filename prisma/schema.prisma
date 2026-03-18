@@ -19,11 +19,11 @@ model User {
 model Folder {
   id Int @id @default(autoincrement())
   name String
-  owner User @relation(fields: [ownerId], references: [id])
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId Int
   files File[]
   folders Folder[] @relation("ParentChild")
-  parentFolder Folder? @relation("ParentChild", fields: [parentFolderId], references: [id])
+  parentFolder Folder? @relation("ParentChild", fields: [parentFolderId], references: [id], onDelete: Cascade)
   parentFolderId Int?
   createdAt DateTime @default(now())
 }
@@ -32,7 +32,7 @@ model File {
   id Int @id @default(autoincrement())
   name String @unique
   fileUrl String @unique
-  parentFolder Folder @relation(fields: [parentFolderId], references: [id])
+  parentFolder Folder @relation(fields: [parentFolderId], references: [id], onDelete: Cascade)
   parentFolderId Int
   createdAt DateTime @default(now())
 }
