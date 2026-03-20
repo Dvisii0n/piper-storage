@@ -5,3 +5,11 @@
 	align-items: center;
 	gap: 15px;
 }
+
+.fileRow {
+	border: 1px solid;
+	padding: 12px;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
