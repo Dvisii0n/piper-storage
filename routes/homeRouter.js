@@ -12,7 +12,9 @@ homeRouter.use(checkAuth);
 homeRouter.get("/", homeController.getHome);
 
 homeRouter.post("/upload/:parentId", multerUpload, fileController.fileUpload);
-homeRouter.get("/downloadFile/", fileController.downloadFile);
+homeRouter.get("/downloadFile", fileController.downloadFile);
+homeRouter.post("/deleteFile", fileController.deleteFile);
+homeRouter.post("/editFile", fileController.editFile);
 
 homeRouter.get("/folder/:id", folderController.getFolder);
 
