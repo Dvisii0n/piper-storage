@@ -9,12 +9,21 @@
 		<form action="/signup" method="post">
 			<label for="email">Email</label>
 			<input type="email" name="email" />
+			<% if (bodyErrors.emailErrors) {%>
+				<%- include('partials/errors', {errors: bodyErrors.emailErrors}) %>	
+			<%} %>
 
 			<label for="username">Username</label>
 			<input type="text" name="username" required />
+			<% if (bodyErrors.usernameErrors) {%>
+				<%- include('partials/errors', {errors: bodyErrors.usernameErrors}) %>	
+			<%} %>
 
 			<label for="password">Password</label>
 			<input type="password" name="password" />
+			<% if (bodyErrors.passwordErrors) {%>
+				<%- include('partials/errors', {errors: bodyErrors.passwordErrors}) %>	
+			<%} %>
 
 			<button type="submit">Sign Up</button>
 		</form>
