@@ -4,6 +4,18 @@ import folderController from "../controllers/folderController.js";
 import fileController from "../controllers/fileController.js";
 import { multerUpload } from "../middleware/multer.js";
 import { checkAuth } from "../middleware/authHandler.js";
+import {
+	validateCreateFolder,
+	validateDeleteFolder,
+	validateEditFolder,
+	validateGetFolder,
+} from "../validation/folderValidation.js";
+import {
+	validateDeleteFile,
+	validateDownloadFile,
+	validateEditFile,
+	validateFileUpload,
+} from "../validation/fileValidation.js";
 
 const homeRouter = new Router();
 
@@ -11,20 +23,45 @@ homeRouter.use(checkAuth);
 
 homeRouter.get("/", homeController.getHome);
 
-homeRouter.post("/upload/:parentId", multerUpload, fileController.fileUpload);
+//files
 
-homeRouter.get("/downloadFile", fileController.downloadFile);
+homeRouter.get(
+	"/downloadFile",
+	validateDownloadFile,
+	fileController.downloadFile,
+);
 
-homeRouter.post("/deleteFile", fileController.deleteFile);
+homeRouter.post("/deleteFile", validateDeleteFile, fileController.deleteFile);
 
-homeRouter.post("/editFile", fileController.editFile);
+homeRouter.post(
+	"/upload/:parentId",
+	validateFileUpload,
+	multerUpload,
+	fileController.fileUpload,
+);
 
-homeRouter.get("/folder/:id", folderController.getFolder);
+homeRouter.post("/editFile", validateEditFile, fileController.editFile);
 
-homeRouter.post("/createFolder/:parentId", folderController.createFolder);
+//folders
 
-homeRouter.post("/editFolder/:id", folderController.editFolder);
+homeRouter.get("/folder/:id", validateGetFolder, folderController.getFolder);
 
-homeRouter.post("/deleteFolder/:id", folderController.deleteFolder);
+homeRouter.post(
+	"/createFolder/:parentId",
+	validateCreateFolder,
+	folderController.createFolder,
+);
+
+homeRouter.post(
+	"/editFolder/:id",
+	validateEditFolder,
+	folderController.editFolder,
+);
+
+homeRouter.post(
+	"/deleteFolder/:id",
+	validateDeleteFolder,
+	folderController.deleteFolder,
+);
 
 export default homeRouter;
