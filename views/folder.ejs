@@ -40,7 +40,7 @@
 				<dialog id="edit-folder-<%= folder.id %>">
 					<form action="/home/editFolder/<%= folder.id %>" method="post">
 						<label for="newFolderName">Folder name:</label>
-						<input type="text" name="newFolderName" value=<%= folder.name %> required>
+						<input type="text" name="newFolderName" value="<%= folder.name %>" required>
 						<button type="submit" >Edit</button>
 						<button type="button" commandFor="edit-folder-<%= folder.id %>" command="close">Cancel</button>
 					</form>
@@ -64,7 +64,7 @@
 					<dialog id="edit-file-<%= file.id %>">
 						<form action="/home/editfile?fileId=<%= file.id %>" method="post">
 							<label for="newFileName">Folder name:</label>
-							<input type="text" name="newFileName" value=<%= file.name %> required>
+							<input type="text" name="newFileName" value="<%= file.name %>" required>
 							<button type="submit" >Edit</button>
 							<button type="button" commandFor="edit-file-<%= file.id %>" command="close">Cancel</button>
 						</form>
