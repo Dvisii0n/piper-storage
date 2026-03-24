@@ -48,8 +48,12 @@ const validateLogin = [
 
 	lengthValidator("username", usernameLength),
 
-	body("password").trim().escape().isAlphanumeric(),
+	body("password")
+		.trim()
+		.isStrongPassword()
+		.withMessage("Password must only contain letters and numbers or symbols"),
 
+	,
 	lengthValidator("password", pwLength),
 ];
 
