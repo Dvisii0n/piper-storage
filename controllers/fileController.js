@@ -22,37 +22,39 @@ async function fileUpload(req, res, next) {
 		});
 
 		if (ownerId !== req.user.id) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
 		const files = req.files;
 
-		const filesData = files.map((file) => {
-			const filePath = `files/${file.originalname + "-" + Date.now() + path.extname(file.originalname)}`;
-			return {
-				name: file.originalname,
-				filePath: filePath,
-				size: file.size,
-				buffer: file.buffer,
-			};
-		});
+		//upload to supabase and modify req.files
+		for (let file of files) {
+			const safeNameWithExt = path
+				.basename(file.originalname)
+				.replace(/[^a-zA-Z0-9._-]/g, "_");
+			const filePath = `files/${crypto.randomUUID()}-${safeNameWithExt}`;
 
-		//files data but without buffer property
-		const filesDataForDb = filesData.map((file) => ({
-			name: file.name,
-			fileUrl: file.filePath,
-			parentFolderId: parentId,
-			size_bytes: file.size,
-		}));
-
-		//upload to supabase
-		for (let file of filesData) {
-			await supabaseUpload(res, file.filePath, file.buffer);
+			file["safeName"] = path.basename(
+				file.originalname,
+				path.extname(file.originalname),
+			);
+			file["extension"] = path.extname(file.originalname);
+			file["fileUrl"] = filePath;
+			await supabaseUpload(res, filePath, file.buffer);
 		}
 
-		//register on db
-		await prisma.file.createMany({ data: filesDataForDb });
+		const filesData = files.map((file) => ({
+			fileUrl: file.fileUrl,
+			mime_type: file.mimetype,
+			name: file.safeName,
+			extension: file.extension,
+			size_bytes: file.size,
+			parentFolderId: parentId,
+		}));
+
+		// //register on db
+		await prisma.file.createMany({ data: filesData });
 		res.redirect(req.get("referer"));
 	} catch (err) {
 		next(err);
@@ -71,6 +73,9 @@ async function downloadFile(req, res, next) {
 			where: { id: fileId },
 			select: {
 				fileUrl: true,
+				mime_type: true,
+				name: true,
+				extension: true,
 				parentFolder: {
 					select: { ownerId: true },
 				},
@@ -78,11 +83,16 @@ async function downloadFile(req, res, next) {
 		});
 
 		if (req.user.id !== data.parentFolder.ownerId) {
-			res.redirect("/home");
-			return;
+			next();
 		}
 
-		const signedUrl = await getSupabaseDownloadUrl(res, data.fileUrl);
+		const fileNameWithExt = `${data.name}${data.extension}`;
+
+		const signedUrl = await getSupabaseDownloadUrl(
+			res,
+			data.fileUrl,
+			fileNameWithExt,
+		);
 		res.redirect(signedUrl);
 	} catch (err) {
 		next(err);
@@ -108,7 +118,7 @@ async function deleteFile(req, res, next) {
 		});
 
 		if (req.user.id !== data.parentFolder.ownerId) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
@@ -128,8 +138,7 @@ async function editFile(req, res, next) {
 			return;
 		}
 
-		const { fileId } = matchedData(req);
-		const newName = req.body.newFileName;
+		const { fileId, newFileName } = matchedData(req);
 		const data = await prisma.file.findUnique({
 			where: { id: fileId },
 			select: {
@@ -141,13 +150,13 @@ async function editFile(req, res, next) {
 		});
 
 		if (req.user.id !== data.parentFolder.ownerId) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
 		await prisma.file.update({
 			where: { id: fileId },
-			data: { name: newName },
+			data: { name: newFileName },
 		});
 
 		res.redirect(req.get("referer"));
