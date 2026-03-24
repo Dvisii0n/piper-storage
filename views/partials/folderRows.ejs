@@ -1,0 +1,18 @@
+<% folders.forEach(folder => {%>
+	<div class="folderRow">
+		<a href="/home/folder/<%= folder.id %>"><%= folder.name %></a>
+		<p><%= folder.createdAt %></p>
+		<button type="button" commandFor="edit-folder-<%= folder.id %>" command="show-modal">Edit folder</button>
+		<dialog id="edit-folder-<%= folder.id %>">
+			<form action="/home/editFolder/<%= folder.id %>" method="post">
+				<label for="newFolderName">Folder name:</label>
+				<input type="text" name="newFolderName" value="<%= folder.name %>" required>
+				<button type="submit" >Edit</button>
+				<button type="button" commandFor="edit-folder-<%= folder.id %>" command="close">Cancel</button>
+			</form>
+		</dialog>
+		<form action="/home/deleteFolder/<%= folder.id %>" method="post">
+			<button type="submit">Delete</button>
+		</form>
+	</div>
+<%}) %>

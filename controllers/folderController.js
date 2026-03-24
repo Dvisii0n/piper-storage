@@ -29,7 +29,7 @@ async function getFolder(req, res, next) {
 		const isOwner = await verifyOwnership(req.user.id, folderId);
 
 		if (!isOwner) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
@@ -60,7 +60,7 @@ async function createFolder(req, res, next) {
 		const isOwner = await verifyOwnership(req.user.id, parentId);
 
 		if (!isOwner) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
@@ -92,22 +92,30 @@ async function deleteFolder(req, res, next) {
 		const isOwner = await verifyOwnership(req.user.id, parsedFolderId);
 
 		if (!isOwner) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
-		//remove folder and files from database
-		const { files } = await prisma.folder.delete({
-			where: { id: parsedFolderId },
-			select: {
-				files: {
-					select: { fileUrl: true },
+		//remove parents, get orphans and delete them
+		const [deletedFolders, orphanFiles] = await prisma.$transaction([
+			prisma.folder.delete({
+				where: { id: parsedFolderId },
+				select: {
+					files: {
+						select: { fileUrl: true },
+					},
 				},
-			},
-		});
+			}),
+			prisma.file.findMany({
+				where: { parentFolderId: null },
+			}),
+			prisma.file.deleteMany({
+				where: { parentFolderId: null },
+			}),
+		]);
 
-		if (files.length > 0) {
-			const fileURLs = files.map((url) => url.fileUrl);
+		if (orphanFiles.length > 0) {
+			const fileURLs = orphanFiles.map((url) => url.fileUrl);
 			//remove files from supabase
 			await supabaseDelete(res, fileURLs);
 		}
@@ -132,7 +140,7 @@ async function editFolder(req, res, next) {
 		const isOwner = await verifyOwnership(req.user.id, folderId);
 
 		if (!isOwner) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 
@@ -149,4 +157,18 @@ async function editFolder(req, res, next) {
 	}
 }
 
-export default { getFolder, editFolder, createFolder, deleteFolder };
+async function getSharedFolder(req, res, next) {
+	try {
+		res.render("index");
+	} catch (err) {
+		next(err);
+	}
+}
+
+export default {
+	getFolder,
+	editFolder,
+	createFolder,
+	deleteFolder,
+	getSharedFolder,
+};

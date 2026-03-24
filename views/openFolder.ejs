@@ -1,0 +1,43 @@
+<div class="openFolder">
+	<button commandfor="upload-file" command="show-modal">Upload file</button>
+	<button commandfor="create-folder" command="show-modal">
+		Create folder
+	</button>
+	<dialog id="upload-file">
+		<form action="/home/upload/<%= folderData.id %>" method="post" enctype="multipart/form-data">
+			<button type="button" commandfor="upload-file" command="close">
+				Close
+			</button>
+			<label for="uploadedFiles">Files</label>
+			<input id="file-upload" type="file" name="uploadedFiles" multiple required />
+			<button type="submit">Upload</button>
+		</form>
+	</dialog>
+
+	<dialog id="create-folder">
+		<form action="/home/createFolder/<%= folderData.id %>" method="post">
+			<button type="button" commandfor="create-folder" command="close">
+				Close
+			</button>
+			<label for="folderName">Folder name: </label>
+			<input type="text" name="folderName" required />
+			<button type="submit">Create</button>
+			</form>
+	</dialog>
+	<a href="/home">Home</a>
+
+	<% if (!folderData.folders.length && !folderData.files.length) {%>
+		<p>This folder is empty</p>	
+	<%} %>
+
+	<% if (folderData.folders.length) {%>
+		<%- include('partials/folderRows', {folders: folderData.folders}) %>
+		
+	<% } %>
+
+	<% if (folderData.files.length) {%>
+		<%- include('partials/fileRows', {files: folderData.files}) %>
+			
+		<% } %>
+
+</div>

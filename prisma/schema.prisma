@@ -31,11 +31,13 @@ model Folder {
 model File {
   id Int @id @default(autoincrement())
   name String 
+  extension String
   fileUrl String @unique
-  parentFolder Folder @relation(fields: [parentFolderId], references: [id], onDelete: Cascade)
-  parentFolderId Int
+  parentFolder Folder? @relation(fields: [parentFolderId], references: [id], onDelete: SetNull)
+  parentFolderId Int?
   size_bytes Int
   createdAt DateTime @default(now())
+  mime_type String 
 }
 
 model Session {

@@ -29,7 +29,7 @@ const validateGetFolder = [...validateFolderId];
 
 const validateCreateFolder = [...validateParentId, ...validateFolderName];
 
-const validateEditFolder = [validateFolderId, ...validateNewFolderName];
+const validateEditFolder = [...validateFolderId, ...validateNewFolderName];
 
 const validateDeleteFolder = [...validateFolderId];
 

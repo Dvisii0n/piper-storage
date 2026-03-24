@@ -6,6 +6,7 @@ import {
 	getLogin,
 	getSignUp,
 } from "../controllers/authController.js";
+import folderController from "../controllers/folderController.js";
 import { validateSignUp } from "../validation/authValidation.js";
 import { query } from "express-validator";
 
@@ -18,6 +19,8 @@ indexRouter.get("/", (req, res, next) => {
 		next(err);
 	}
 });
+
+indexRouter.get("/share/:folderUUID", folderController.getSharedFolder);
 
 indexRouter.get("/login", query("error").escape(), getLogin);
 

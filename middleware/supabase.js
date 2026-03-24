@@ -11,18 +11,16 @@ async function supabaseUpload(res, file_path, file) {
 		.from("files")
 		.upload(file_path, file);
 	if (error) {
-		res.status(500).send("An error ocurred when uploading to cloud storage");
-		return;
+		throw "An error ocurred when uploading to cloud storage";
 	}
 }
 
-async function getSupabaseDownloadUrl(res, file_path) {
+async function getSupabaseDownloadUrl(res, file_path, filename) {
 	const { data, error } = await supabase.storage
 		.from("files")
-		.createSignedUrl(file_path, 60, { download: true });
+		.createSignedUrl(file_path, 60, { download: filename });
 	if (error) {
-		res.status(500).send("An error ocurred donwloading from cloud storage");
-		return;
+		throw "An error ocurred donwloading from cloud storage";
 	}
 
 	return data.signedUrl;
@@ -34,8 +32,7 @@ async function supabaseDelete(res, file_paths) {
 		.from("files")
 		.remove(file_paths);
 	if (error) {
-		res.status(500).send("An error ocurred when deleting from cloud storage");
-		return;
+		throw "An error ocurred when deleting from cloud storage";
 	}
 }
 

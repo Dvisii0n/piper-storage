@@ -38,8 +38,8 @@ const validateSignUp = [
 	body("password")
 		.trim()
 		.escape()
-		.isAlphanumeric()
-		.withMessage("Password must only contain letters and numbers"),
+		.isStrongPassword()
+		.withMessage("Password must only contain letters and numbers or symbols"),
 
 	lengthValidator("password", pwLength),
 ];

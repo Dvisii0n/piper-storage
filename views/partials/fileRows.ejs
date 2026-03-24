@@ -1,0 +1,21 @@
+<% files.forEach(file => {%>
+	<div class="fileRow">
+		<p><%= file.name %></p>
+		<p>Type: <%= file.extension %></p>
+		<p><%= file.createdAt %></p>
+		<p><%= file.size_bytes / 1000000%> MB</p>
+		<a href="/home/downloadFile?fileId=<%= file.id%>">Download File</a>
+		<button type="button" commandFor="edit-file-<%= file.id %>" command="show-modal">Edit file</button>
+		<dialog id="edit-file-<%= file.id %>">
+			<form action="/home/editfile?fileId=<%= file.id %>" method="post">
+				<label for="newFileName">Edit file name:</label>
+				<input type="text" name="newFileName" value="<%= file.name %>" required>
+				<button type="submit" >Edit</button>
+				<button type="button" commandFor="edit-file-<%= file.id %>" command="close">Cancel</button>
+			</form>
+		</dialog>
+		<form action="/home/deleteFile?fileId=<%= file.id %>" method="post">
+			<button type="submit">Delete</button>
+        </form>
+	</div>		
+<%}) %>
