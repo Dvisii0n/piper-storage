@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { lengthValidator } from "../utils/validationUtils.js";
 
 const validateFolderName = [
@@ -33,10 +33,24 @@ const validateEditFolder = [...validateFolderId, ...validateNewFolderName];
 
 const validateDeleteFolder = [...validateFolderId];
 
+const validateCreateSharedFolder = [
+	...validateFolderId,
+	body("duration").exists().escape().isInt({ min: 0, max: 14 }).toInt(),
+];
+
+const validateShareId = [query("shareId").exists().isString()];
+
+const validateGetSharedFolder = [
+	param("folderUUID").exists().escape().isString(),
+];
+
 export {
 	validateGetFolder,
 	validateFolderName,
 	validateCreateFolder,
 	validateEditFolder,
 	validateDeleteFolder,
+	validateCreateSharedFolder,
+	validateShareId,
+	validateGetSharedFolder,
 };
