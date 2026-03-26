@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/styles.css">
+	<title>Shared Folder</title>
+</head>
+
+<body>
+	<div class="openFolder">
+        <h1><%= folderData.name %></h1>
+		<% if (!folderData.folders.length && !folderData.files.length) {%>
+		<p>This folder is empty</p>
+		<%} %>
+
+		<% if (folderData.folders.length) {%>
+		<%- include('partials/readOnlyFolderRows', {folders: folderData.folders}) %>
+
+		<% } %>
+
+		<% if (folderData.files.length) {%>
+		<%- include('partials/readOnlyFileRows', {files: folderData.files}) %>
+
+		<% } %>
+	</div>
+</body>
+
+</html>

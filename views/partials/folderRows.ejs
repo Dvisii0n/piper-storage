@@ -14,5 +14,23 @@
 		<form action="/home/deleteFolder/<%= folder.id %>" method="post">
 			<button type="submit">Delete</button>
 		</form>
+		<button commandFor="share-folder-<%= folder.id %>" command='show-modal' type="submit">Share</button>
+		<dialog id="share-folder-<%= folder.id %>">
+			<form action="/home/createSharedFolder/<%= folder.id %>" method="post">
+				<label for="duration">Duration</label>
+				<select name="duration" required>
+					<option value="1">1 day</option>
+					<option value="3">3 days</option>
+					<option value="7">7 days</option>
+					<option value="14">14 days</option>
+				</select>
+
+				<button type="submit">Get share url</button>
+				<button type="button" commandFor="share-folder-<%= folder.id %>" command="close">Cancel</button>
+				
+			</form>
+		</dialog>
+		
+		
 	</div>
 <%}) %>

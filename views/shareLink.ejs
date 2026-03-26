@@ -1,0 +1,13 @@
+<script>
+	async function appendToClipboard(text) {
+		const type = "text/plain";
+		const clipboardItemData = {
+			[type]: text,
+		};
+		const clipboardItem = new ClipboardItem(clipboardItemData);
+		await navigator.clipboard.write([clipboardItem]);
+	}
+</script>
+
+<p class="shareLink"><%= shareLink %></p>
+<button onclick="appendToClipboard('<%= shareLink %>')">Copy</button>

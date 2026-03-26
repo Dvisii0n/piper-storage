@@ -1,0 +1,9 @@
+<% files.forEach(file => {%>
+	<div class="fileRow">
+		<p><%= file.name %></p>
+		<p>Type: <%= file.extension %></p>
+		<p><%= file.createdAt %></p>
+		<p><%= file.size_bytes / 1000000%> MB</p>
+		<a href="">Download File</a>
+	</div>		
+<%}) %>
