@@ -37,10 +37,16 @@ const validateSignUp = [
 
 	body("password")
 		.trim()
-		.isStrongPassword()
-		.withMessage("Password must only contain letters and numbers or symbols"),
-
-	lengthValidator("password", pwLength),
+		.isStrongPassword({
+			minLength: 8,
+			minLowercase: 1,
+			minUppercase: 1,
+			minNumbers: 1,
+			minSymbols: 1,
+		})
+		.withMessage(
+			"Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one symbol",
+		),
 ];
 
 const validateLogin = [

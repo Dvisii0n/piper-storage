@@ -21,9 +21,9 @@ const validateNewFolderName = [
 	lengthValidator("newFolderName", { min: 1, max: 255 }),
 ];
 
-const validateFolderId = [param("id").exists().escape().isInt().toInt()];
+const validateFolderId = [param("id").exists().escape().isUUID()];
 
-const validateParentId = [param("parentId").exists().escape().isInt().toInt()];
+const validateParentId = [param("parentId").exists().escape().isUUID()];
 
 const validateGetFolder = [...validateFolderId];
 
@@ -35,7 +35,7 @@ const validateDeleteFolder = [...validateFolderId];
 
 const validateCreateSharedFolder = [
 	...validateFolderId,
-	body("duration").exists().escape().isInt({ min: 0, max: 14 }).toInt(),
+	body("duration").exists().escape().isInt().toInt(),
 ];
 
 const validateShareId = [query("shareId").exists().isUUID()];

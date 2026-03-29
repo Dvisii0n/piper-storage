@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id String @id @unique
   email String @unique
   username String @unique
   password String
@@ -17,25 +17,25 @@ model User {
 }
 
 model Folder {
-  id Int @id @default(autoincrement())
+  id String @id @unique
   sharedFolders SharedFolder[]
   name String
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int
+  ownerId String
   files File[]
   folders Folder[] @relation("ParentChild")
   parentFolder Folder? @relation("ParentChild", fields: [parentFolderId], references: [id], onDelete: Cascade)
-  parentFolderId Int?
+  parentFolderId String?
   createdAt DateTime @default(now())
 }
 
 model File {
-  id Int @id @default(autoincrement())
+  id String @id @unique
   name String 
   extension String
   fileUrl String @unique
   parentFolder Folder? @relation(fields: [parentFolderId], references: [id], onDelete: SetNull)
-  parentFolderId Int?
+  parentFolderId String?
   size_bytes Int
   createdAt DateTime @default(now())
   mime_type String 
@@ -51,7 +51,7 @@ model Session {
 model SharedFolder {
   id String @id @unique
   sharedFolder Folder? @relation(fields: [sharedFolderId], references: [id], onDelete: Cascade)
-  sharedFolderId Int 
+  sharedFolderId String 
   expiresAt DateTime
   childShares SharedFolder[] @relation("ChildShare")
   parentShare SharedFolder? @relation("ChildShare", fields: [parentShareId], references: [id], onDelete: Cascade)

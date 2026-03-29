@@ -44,11 +44,12 @@ const signupUser = async (req, res, next) => {
 		const passwordHash = await bcrypt.hash(password, 10);
 		await prisma.user.create({
 			data: {
+				id: crypto.randomUUID(),
 				email: email,
 				username: username,
 				password: passwordHash,
 				folders: {
-					create: [{ name: "home" }],
+					create: [{ id: crypto.randomUUID(), name: "home" }],
 				},
 			},
 		});

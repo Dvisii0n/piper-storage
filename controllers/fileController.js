@@ -45,6 +45,7 @@ async function fileUpload(req, res, next) {
 		}
 
 		const filesData = files.map((file) => ({
+			id: crypto.randomUUID(),
 			fileUrl: file.fileUrl,
 			mime_type: file.mimetype,
 			name: file.safeName,
@@ -199,8 +200,6 @@ async function downloadSharedFile(req, res, next) {
 			fileNameWithExt,
 		);
 		res.redirect(signedUrl);
-
-		res.json(data);
 	} catch (err) {
 		next(err);
 	}

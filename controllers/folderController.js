@@ -69,6 +69,7 @@ async function createFolder(req, res, next) {
 		const result = await prisma.$transaction(async (tx) => {
 			const createdFolder = await prisma.folder.create({
 				data: {
+					id: crypto.randomUUID(),
 					name: folderName,
 					ownerId: ownerId,
 					parentFolderId: parentId,

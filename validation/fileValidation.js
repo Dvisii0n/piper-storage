@@ -1,8 +1,8 @@
 import { body, param, query } from "express-validator";
 import { lengthValidator } from "../utils/validationUtils.js";
 
-const validateParentId = [param("parentId").exists().escape().isInt().toInt()];
-const validateQueryFileId = [query("fileId").exists().escape().isInt().toInt()];
+const validateParentId = [param("parentId").exists().escape().isUUID()];
+const validateQueryFileId = [query("fileId").exists().escape().isUUID()];
 
 const validateFileUpload = [...validateParentId];
 
@@ -16,14 +16,14 @@ const validateEditFile = [
 		.notEmpty()
 		.escape()
 		.isAlphanumeric("en-US", { ignore: "_- ." })
-		.withMessage("New file name must me alphanumeric"),
+		.withMessage("New file name must only contain letters and symbols"),
 
 	lengthValidator("newFileName", { min: 1, max: 255 }),
 ];
 
 const validateGetSharedFile = [
 	param("parentShareUUID").exists().escape().isUUID(),
-	query("fileId").exists().escape().isInt().toInt(),
+	query("fileId").exists().escape().isUUID(),
 ];
 
 export {
