@@ -33,6 +33,7 @@ async function multerUpload(req, res, next) {
 			}
 		} else if (err) {
 			next(err);
+			return;
 		}
 
 		next();
