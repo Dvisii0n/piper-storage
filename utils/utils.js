@@ -15,12 +15,17 @@ export function getBodyErrors(errorsArr) {
 	return nameObj;
 }
 
-export function createSharedFolderData(folder, duration, shareId) {
+export function getExpiringDate(duration) {
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + duration);
+	return expiresAt;
+}
+
+export function createSharedFolderData(folder, duration, shareId) {
+	const expiringDate = getExpiringDate(duration);
 	return {
 		id: shareId,
-		expiresAt: expiresAt,
+		expiresAt: expiringDate,
 		sharedFolderId: folder.id,
 	};
 }
