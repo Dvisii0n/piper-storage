@@ -165,9 +165,51 @@ async function editFile(req, res, next) {
 	}
 }
 
+async function downloadSharedFile(req, res, next) {
+	try {
+		const { fileId, parentShareId } = matchedData(req);
+
+		const data = await prisma.file.findUnique({
+			where: { id: fileId },
+			select: {
+				name: true,
+				fileUrl: true,
+				extension: true,
+				parentFolder: {
+					select: {
+						sharedFolders: {
+							where: { id: parentShareId },
+							select: { id: true },
+						},
+					},
+				},
+			},
+		});
+
+		if (!data || data.parentFolder.sharedFolders.length === 0) {
+			next();
+			return;
+		}
+
+		const fileNameWithExt = `${data.name}${data.extension}`;
+
+		const signedUrl = await getSupabaseDownloadUrl(
+			res,
+			data.fileUrl,
+			fileNameWithExt,
+		);
+		res.redirect(signedUrl);
+
+		res.json(data);
+	} catch (err) {
+		next(err);
+	}
+}
+
 export default {
 	fileUpload,
 	downloadFile,
 	deleteFile,
 	editFile,
+	downloadSharedFile,
 };
