@@ -1,6 +1,6 @@
 import { matchedData, validationResult } from "express-validator";
 import { prisma } from "../lib/prisma.js";
-import { supabaseDelete } from "../middleware/supabase.js";
+import { supabaseDelete } from "../lib/supabase.js";
 import BASE_URL from "../utils/baseUrl.js";
 import { getFullSharedFoldersData } from "../utils/utils.js";
 
@@ -22,7 +22,7 @@ async function getFolder(req, res, next) {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			res.redirect(req.get("referer"));
+			next();
 			return;
 		}
 
@@ -51,8 +51,7 @@ async function createFolder(req, res, next) {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			console.log(errors.array());
-			res.redirect(req.get("referer"));
+			next();
 			return;
 		}
 
@@ -109,7 +108,7 @@ async function deleteFolder(req, res, next) {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			res.redirect("/home");
+			next();
 			return;
 		}
 		const { id: folderId } = matchedData(req);
@@ -122,28 +121,24 @@ async function deleteFolder(req, res, next) {
 		}
 
 		//remove parents, get orphans and delete them
-		const [deletedFolders, orphanFiles] = await prisma.$transaction([
-			prisma.folder.delete({
+		await prisma.$transaction(async (tx) => {
+			await prisma.folder.delete({
 				where: { id: folderId },
-				select: {
-					files: {
-						select: { fileUrl: true },
-					},
-				},
-			}),
-			prisma.file.findMany({
-				where: { parentFolderId: null },
-			}),
-			prisma.file.deleteMany({
-				where: { parentFolderId: null },
-			}),
-		]);
+			});
 
-		if (orphanFiles.length > 0) {
-			const fileURLs = orphanFiles.map((url) => url.fileUrl);
-			//remove files from supabase
-			await supabaseDelete(res, fileURLs);
-		}
+			const orphans = await prisma.file.findMany({
+				where: { parentFolderId: null },
+			});
+
+			if (orphans.length > 0) {
+				await prisma.file.deleteMany({
+					where: { parentFolderId: null },
+				});
+				const fileURLs = orphans.map((url) => url.fileUrl);
+				//remove files from supabase
+				await supabaseDelete(res, fileURLs);
+			}
+		});
 
 		res.redirect(req.get("referer"));
 	} catch (err) {
@@ -169,7 +164,7 @@ async function editFolder(req, res, next) {
 			return;
 		}
 
-		const { newFolderName } = req.body;
+		const { newFolderName } = matchedData(req);
 		await prisma.folder.update({
 			where: { id: folderId },
 			data: {
@@ -195,6 +190,7 @@ async function createSharedFolder(req, res, next) {
 		const isOwner = await verifyOwnership(req.user.id, folderId);
 		if (!isOwner) {
 			next();
+			return;
 		}
 
 		const result = await prisma.$transaction(async (tx) => {
@@ -228,6 +224,7 @@ async function getFolderShareLink(req, res, next) {
 
 		if (!errors.isEmpty()) {
 			next();
+			return;
 		}
 
 		const { shareId } = matchedData(req);
@@ -243,6 +240,7 @@ async function getSharedFolder(req, res, next) {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			next();
+			return;
 		}
 		const { folderUUID } = matchedData(req);
 		const folderData = await prisma.sharedFolder.findUnique({

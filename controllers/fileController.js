@@ -4,7 +4,7 @@ import {
 	getSupabaseDownloadUrl,
 	supabaseDelete,
 	supabaseUpload,
-} from "../middleware/supabase.js";
+} from "../lib/supabase.js";
 import path from "path";
 
 async function fileUpload(req, res, next) {
@@ -85,6 +85,7 @@ async function downloadFile(req, res, next) {
 
 		if (req.user.id !== data.parentFolder.ownerId) {
 			next();
+			return;
 		}
 
 		const fileNameWithExt = `${data.name}${data.extension}`;
