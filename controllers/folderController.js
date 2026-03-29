@@ -66,12 +66,35 @@ async function createFolder(req, res, next) {
 			return;
 		}
 
-		await prisma.folder.create({
-			data: {
-				name: folderName,
-				ownerId: ownerId,
-				parentFolderId: parentId,
-			},
+		const result = await prisma.$transaction(async (tx) => {
+			const createdFolder = await prisma.folder.create({
+				data: {
+					name: folderName,
+					ownerId: ownerId,
+					parentFolderId: parentId,
+				},
+			});
+
+			const parentShares = await prisma.sharedFolder.findMany({
+				where: { sharedFolderId: createdFolder.parentFolderId },
+			});
+
+			//if parent folder has shares
+			if (parentShares.length > 0) {
+				let sharesToCreate = [];
+				for (let share of parentShares) {
+					const shareId = crypto.randomUUID();
+					sharesToCreate.push({
+						id: shareId,
+						expiresAt: share.expiresAt,
+						parentShareId: share.id,
+						sharedFolderId: createdFolder.id,
+					});
+				}
+
+				//for each share related to the parent, create a new child share
+				await prisma.sharedFolder.createMany({ data: sharesToCreate });
+			}
 		});
 
 		res.redirect(req.get("referer"));
@@ -173,22 +196,26 @@ async function createSharedFolder(req, res, next) {
 			next();
 		}
 
-		const folders = await prisma.folder.findMany({
-			where: { ownerId: req.user.id },
-			orderBy: { id: "desc" },
+		const result = await prisma.$transaction(async (tx) => {
+			const folders = await prisma.folder.findMany({
+				where: { ownerId: req.user.id },
+				orderBy: { id: "desc" },
+			});
+
+			const [shareId, data] = getFullSharedFoldersData(
+				folders,
+				folderId,
+				duration,
+			);
+
+			await prisma.sharedFolder.createMany({
+				data: data,
+			});
+
+			return shareId;
 		});
 
-		const [shareId, data] = getFullSharedFoldersData(
-			folders,
-			folderId,
-			duration,
-		);
-
-		await prisma.sharedFolder.createMany({
-			data: data,
-		});
-
-		res.redirect("/home/getFolderShareLink?shareId=" + shareId);
+		res.redirect("/home/getFolderShareLink?shareId=" + result);
 	} catch (err) {
 		next(err);
 	}
@@ -217,7 +244,7 @@ async function getSharedFolder(req, res, next) {
 			next();
 		}
 		const { folderUUID } = matchedData(req);
-		const { sharedFolder: folderData } = await prisma.sharedFolder.findUnique({
+		const folderData = await prisma.sharedFolder.findUnique({
 			where: { id: folderUUID },
 			include: {
 				sharedFolder: {
@@ -235,7 +262,16 @@ async function getSharedFolder(req, res, next) {
 				},
 			},
 		});
-		res.render("readOnlyOpenFolder", { folderData: folderData });
+
+		if (!folderData) {
+			next();
+			return;
+		}
+
+		res.render("readOnlyOpenFolder", {
+			folderData: folderData.sharedFolder,
+			shareId: folderData.id,
+		});
 	} catch (err) {
 		next(err);
 	}
