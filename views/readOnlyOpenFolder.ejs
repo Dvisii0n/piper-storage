@@ -9,8 +9,9 @@
 </head>
 
 <body>
-	<div class="openFolder">
-        <h1><%= folderData.name %></h1>
+	<div class="openFolder" folderName="<%= folderData.name %>" folderId="<%= folderData.id %>">
+		<h1><%= folderData.name %></h1>
+       
 		<% if (!folderData.folders.length && !folderData.files.length) {%>
 		<p>This folder is empty</p>
 		<%} %>
