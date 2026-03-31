@@ -4,9 +4,11 @@ async function getHome(req, res, next) {
 	try {
 		const homeFolder = await prisma.folder.findFirst({
 			where: { parentFolderId: null, AND: { ownerId: req.user.id } },
-			include: {
+			select: {
 				folders: true,
 				files: true,
+				name: true,
+				id: true,
 			},
 		});
 

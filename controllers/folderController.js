@@ -37,7 +37,12 @@ async function getFolder(req, res, next) {
 
 		const folder = await prisma.folder.findUnique({
 			where: { id: folderId },
-			select: { folders: true, files: true, id: true },
+			select: {
+				folders: true,
+				name: true,
+				files: true,
+				id: true,
+			},
 		});
 
 		res.render("home", { folderData: folder });
