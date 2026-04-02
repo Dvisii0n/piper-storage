@@ -2,20 +2,9 @@ export function renderPath() {
 	const currentHistory = JSON.parse(localStorage.getItem("history"));
 	const container = document.querySelector(".pathNavigation");
 
-	const currentVisit = currentHistory[currentHistory.length - 1];
-	const indexOfCurrentVisit = currentHistory.indexOf(currentVisit);
-	const previousVisit = currentHistory[indexOfCurrentVisit - 1];
-
-	if (previousVisit) {
-		const goBackBtn = document.querySelector(".goBack");
-
-		goBackBtn.addEventListener("click", (e) => {
-			window.location.href = `/home/folder/${previousVisit.id}`;
-		});
-	}
-
 	for (let visitedFolder of currentHistory) {
 		const pathLink = document.createElement("a");
+		pathLink.className = "pathLink";
 		pathLink.href = `/home/folder/${visitedFolder.id}`;
 		pathLink.textContent = visitedFolder.name;
 		const slash = document.createElement("span");
