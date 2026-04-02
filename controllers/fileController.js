@@ -137,7 +137,7 @@ async function editFile(req, res, next) {
 	try {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
-			res.send(errors);
+			res.redirect(req.get("referer"));
 			return;
 		}
 
