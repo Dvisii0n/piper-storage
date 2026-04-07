@@ -1,7 +1,16 @@
 import { prisma } from "../lib/prisma.js";
+import { matchedData, validationResult } from "express-validator";
 
 async function getHome(req, res, next) {
 	try {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			next();
+			return;
+		}
+
+		const { uploadError } = matchedData(req);
 		const folderData = await prisma.$transaction(async (tx) => {
 			const homeFolder = await tx.folder.findFirst({
 				where: { parentFolderId: null, AND: { ownerId: req.user.id } },
@@ -24,7 +33,7 @@ async function getHome(req, res, next) {
 			return homeFolder;
 		});
 
-		res.render("home", { folderData: folderData });
+		res.render("home", { folderData: folderData, uploadError: uploadError });
 	} catch (err) {
 		next(err);
 	}

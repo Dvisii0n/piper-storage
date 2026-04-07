@@ -26,7 +26,7 @@ async function getFolder(req, res, next) {
 			return;
 		}
 
-		const { id: folderId } = matchedData(req);
+		const { id: folderId, uploadError } = matchedData(req);
 
 		const isOwner = await verifyOwnership(req.user.id, folderId);
 
@@ -45,7 +45,7 @@ async function getFolder(req, res, next) {
 			},
 		});
 
-		res.render("home", { folderData: folder });
+		res.render("home", { folderData: folder, uploadError: uploadError });
 	} catch (err) {
 		next(err);
 	}
