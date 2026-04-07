@@ -17,7 +17,7 @@
 
 			</button>
 			<label for="newFileName">Edit file name:</label>
-			<input type="text" name="newFileName" value="<%= file.name %>" required>
+			<input type="text" name="newFileName" value="<%= file.name %>" required maxlength="50">
 			<div class="dialogBottom">
 				<button type="button" commandFor="edit-file-<%= file.id %>" command="close" class="cancelBtn">Cancel</button>
 				<button type="submit" class="submitBtn">Edit</button>

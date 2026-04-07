@@ -1,7 +1,7 @@
 <% folders.forEach(folder => {%>
 <div class="folderRow">
 	<img src="/icons/folder.svg" alt="folder icon">
-	<a href="/home/folder/<%= folder.id %>" class="folderName"><%= folder.name %></a>
+	<p class="folderName"><a href="/home/folder/<%= folder.id %>" class="folderName"><%= folder.name %></a></p>
 
 	<button class="edit" type="button" commandFor="edit-folder-<%= folder.id %>" command="show-modal">
 		<img src="/icons/edit.svg" alt="edit button" class="rowIcon">
@@ -13,7 +13,7 @@
 
 			</button>
 			<label for="newFolderName">Edit folder name:</label>
-			<input type="text" name="newFolderName" value="<%= folder.name %>" required>
+			<input type="text" name="newFolderName" value="<%= folder.name %>" required maxlength="50">
 			<div class="dialogBottom">
 				<button type="button" commandFor="edit-folder-<%= folder.id %>" command="close" class="cancelBtn">
 					Cancel
@@ -57,7 +57,7 @@
 
 			<div class="dialogBottom">
 				<button type="button" commandFor="share-folder-<%= folder.id %>" command="close" class="cancelBtn">Cancel</button>
-				<button type="submit" class="submitBtn">Get url</button>
+				<button type="submit" class="submitBtn" >Get url</button>
 			</div>
 		</form>
 	</dialog>

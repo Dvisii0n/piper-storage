@@ -17,15 +17,35 @@
 				};
 				const clipboardItem = new ClipboardItem(clipboardItemData);
 				await navigator.clipboard.write([clipboardItem]);
+				const popup = document.querySelector("#popup");
+				popup.showModal();
 			}
 		</script>
+		<%- include('partials/header') %>
+		<main>
+			<div class="shareLinkContainer">
+				<p><strong>Share Link:</strong></p>
+				<p class="shareLink"><%= shareLink %></p>
+				<button class="cancelBtn" onclick="history.back()">Go back</button>
+				<button
+					class="shareLinkBtn"
+					data-link="<%= shareLink %>"
+					onclick="appendToClipboard(this.dataset.link)"
+				>
+					Copy
+				</button>
+				<dialog id="popup">
+					<button commandFor="popup" command="close" class="closeBtn">
+						<img src="/icons/close.svg" alt="close button" />
+					</button>
+					<p class="popupMsg">Copied share link to clipboard</p>
+					<button commandFor="popup" command="close" class="cancelBtn">
+						Close
+					</button>
+				</dialog>
+			</div>
+		</main>
 
-		<p class="shareLink"><%= shareLink %></p>
-		<button
-			data-link="<%= shareLink %>"
-			onclick="appendToClipboard(this.dataset.link)"
-		>
-			Copy
-		</button>
+		<%- include('partials/footer') %>
 	</body>
 </html>

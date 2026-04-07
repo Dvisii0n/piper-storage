@@ -12,8 +12,19 @@
 <body>
 	<%- include('partials/header') %>
 	<main class="home">
+		<% if (locals.uploadError) {%>
+			<% switch (uploadError) {
+				case 'LIMIT_FILE_SIZE': %>
+					<%- include('partials/errorPopup', {errorMsg: 'File size cannot exceed the specified limit.'}) %>
+				<% break;
+				case 'LIMIT_FILE_COUNT': %>
+					<%- include('partials/errorPopup', {errorMsg: "Cannot upload more files than the specified limit."}) %>
+				<% break;
+			} %>
+		<%} %>
 		<%- include('openFolder', {folderData: folderData}) %>
 	</main>
+
 	<%- include('partials/footer') %>
 </body>
 <script src="/scripts/userNavigation.js" type="module" defer></script>
