@@ -7,8 +7,9 @@ import { getBodyErrors } from "../utils/utils.js";
 const getLogin = (req, res, next) => {
 	try {
 		const { error } = matchedData(req);
+
 		if (error === "true") {
-			res.render("login", { loginError: req.session.messages[0] });
+			res.render("login", { loginError: "Invalid user or password" });
 			return;
 		}
 		res.render("login", { loginError: "" });
