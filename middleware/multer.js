@@ -1,4 +1,5 @@
 import multer, { MulterError } from "multer";
+import { getCleanReferer } from "../utils/utils.js";
 
 //max files to upload
 const LIMIT = 5;
@@ -16,15 +17,15 @@ const upload = multer({
 async function multerUpload(req, res, next) {
 	upload(req, res, (err) => {
 		if (err instanceof MulterError) {
+			const refererURL = req.get("referer");
+			const cleanReferer = getCleanReferer(refererURL);
 			switch (err.code) {
 				case "LIMIT_FILE_SIZE":
-					res.send(`File must not exceed ${MAX_SIZE_MB} MB`);
+					res.redirect(cleanReferer + "?uploadError=LIMIT_FILE_SIZE");
 					return;
 
 				case "LIMIT_FILE_COUNT":
-					res.send(
-						`You can only upload a maximun of ${LIMIT} files at the same time`,
-					);
+					res.redirect(cleanReferer + "?uploadError=LIMIT_FILE_COUNT");
 					return;
 
 				default:
