@@ -58,12 +58,12 @@ app.use("/home", homeRouter);
 
 //default status handlers
 app.use((req, res) => {
-	res.status(404).send("404 not found");
+	res.status(404).render("404");
 });
 
 app.use((err, req, res, next) => {
 	console.error(err);
-	res.status(500).send("500 server error");
+	res.status(500).render("500");
 });
 
 app.listen(PORT, (error) => {
