@@ -8,7 +8,7 @@ const validateFolderName = [
 		.isAlphanumeric("en-US", { ignore: "_- " })
 		.withMessage("Folder name can only contain letters and numbers"),
 
-	lengthValidator("folderName", { min: 1, max: 255 }),
+	lengthValidator("folderName", { min: 1, max: 50 }),
 ];
 
 const validateNewFolderName = [
@@ -18,14 +18,17 @@ const validateNewFolderName = [
 		.isAlphanumeric("en-US", { ignore: "_- " })
 		.withMessage("New folder name can only contain letters and numbers"),
 
-	lengthValidator("newFolderName", { min: 1, max: 255 }),
+	lengthValidator("newFolderName", { min: 1, max: 50 }),
 ];
 
 const validateFolderId = [param("id").exists().escape().isUUID()];
 
 const validateParentId = [param("parentId").exists().escape().isUUID()];
 
-const validateGetFolder = [...validateFolderId];
+const validateGetFolder = [
+	...validateFolderId,
+	query("uploadError").escape().isString().optional(),
+];
 
 const validateCreateFolder = [...validateParentId, ...validateFolderName];
 
@@ -44,6 +47,8 @@ const validateGetSharedFolder = [
 	param("folderUUID").exists().escape().isUUID(),
 ];
 
+const validateGetHome = [query("uploadError").escape().isString().optional()];
+
 export {
 	validateGetFolder,
 	validateFolderName,
@@ -53,4 +58,5 @@ export {
 	validateCreateSharedFolder,
 	validateShareId,
 	validateGetSharedFolder,
+	validateGetHome,
 };
