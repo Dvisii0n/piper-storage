@@ -1,13 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
-	--piper-black: #181717;
+	--piper-black: #131212;
 	--piper-black-light: #252525;
 	--file-info: #5a5a5a;
 	--visited-link: #868686;
 	--pied-green: #01825b;
 	--pied-green-light: #006446;
 	--pied-green-dark: #015038;
+	--pied-green-ultradark: rgb(0, 15, 11);
 	--text-color: #dbdbdb;
 	--montserrat: "Montserrat", sans-serif;
 }
@@ -43,7 +44,6 @@ header {
 	background-image: url(/images/headerPattern.png);
 	background-position: center;
 	background-size: cover;
-	margin-bottom: 20px;
 }
 .logo {
 	max-width: 180px;
@@ -67,6 +67,7 @@ header {
 
 .headerAnchor {
 	color: var(--text-color);
+	text-decoration: none;
 }
 .headerAnchor:hover {
 	color: #ffffff62;
@@ -148,6 +149,79 @@ button {
 	gap: 12px;
 }
 
+/*index */
+
+.index {
+	display: block;
+}
+
+.hero {
+	background-color: var(--pied-green-ultradark);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	padding: 32px;
+	gap: 12px;
+}
+
+.heroLeft {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.heroImg {
+	max-width: 100%;
+	border-radius: 12px;
+	height: auto;
+}
+
+.indexTitle {
+	font-size: 48px;
+	word-break: break-all;
+	margin: 0;
+}
+.indexDescription {
+	font-size: 24px;
+	max-width: 400px;
+	overflow-wrap: break-word;
+}
+
+.minimal {
+	color: var(--pied-green-light);
+	font-weight: bold;
+}
+
+.signUpBtn {
+	background-color: var(--pied-green-light);
+	color: var(--text-color);
+	font-weight: 600;
+	max-width: fit-content;
+	border: 1px solid var(--pied-green-light);
+	padding: 8px;
+	border-radius: 12px;
+	font-size: 16px;
+}
+
+.about {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 25px;
+}
+
+.aboutSubtitle {
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.aboutDesc {
+	margin-top: 8px;
+	border-top: 1px solid var(--text-color);
+	padding-top: 8px;
+	max-width: 600px;
+}
 /*all forms */
 
 input {
@@ -160,7 +234,8 @@ input {
 	border-radius: 4px;
 }
 
-.submitBtn {
+.submitBtn,
+.shareLinkBtn {
 	background-color: var(--pied-green);
 	font-weight: bold;
 	border: 1px solid var(--pied-green);
@@ -192,7 +267,7 @@ input {
 }
 
 .asterisk {
-	color: red;
+	color: rgb(156, 25, 25);
 }
 
 .duration {
@@ -238,6 +313,17 @@ dialog > form {
 	color: var(--text-color);
 }
 
+.errorPopupMsg,
+.popupMsg {
+	color: var(--text-color);
+	max-width: 150px;
+	padding: 8px;
+}
+
+.popupMsg {
+	max-width: fit-content;
+}
+
 .closeBtn {
 	max-width: fit-content;
 	align-self: flex-start;
@@ -248,7 +334,6 @@ dialog > form {
 .dialogBottom {
 	display: flex;
 	align-self: end;
-
 	gap: 8px;
 }
 
@@ -359,8 +444,9 @@ dialog > form {
 }
 
 .folderName,
-.filename {
-	width: 120px;
+.fileName {
+	word-break: break-all;
+	max-width: 120px;
 }
 
 .folderName {
@@ -387,4 +473,24 @@ dialog > form {
 
 .pathLink:hover {
 	text-decoration: underline;
+}
+
+.shareLinkContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 500px;
+	margin: 12px;
+	gap: 8px;
+	padding: 12px;
+	border-radius: 12px;
+	background-color: var(--piper-black-light);
+}
+
+.shareLink {
+	word-break: break-all;
+}
+
+.shareLinkBtn {
+	padding: 8px;
 }
