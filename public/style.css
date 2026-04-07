@@ -165,16 +165,31 @@ button {
 	gap: 12px;
 }
 
+@keyframes fadeInSlide {
+	0% {
+		opacity: 0;
+		transform: translateX(-100px);
+	}
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+}
+
 .heroLeft {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
+	animation: fadeInSlide 1s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .heroImg {
 	max-width: 100%;
 	border-radius: 12px;
 	height: auto;
+	animation: fadeIn 2s ease-out;
 }
 
 .indexTitle {
@@ -182,6 +197,7 @@ button {
 	word-break: break-all;
 	margin: 0;
 }
+
 .indexDescription {
 	font-size: 24px;
 	max-width: 400px;
@@ -202,6 +218,12 @@ button {
 	padding: 8px;
 	border-radius: 12px;
 	font-size: 16px;
+	transition: all 200ms ease-out;
+}
+
+.signUpBtn:hover {
+	transform: scale(1.05);
+	background-color: #01825b;
 }
 
 .about {
@@ -429,9 +451,8 @@ dialog > form {
 
 .folderRow,
 .fileRow {
-	border-bottom: 1px solid var(--piper-black-light);
+	border-top: 1px solid var(--piper-black-light);
 	padding: 12px;
-	border-radius: 12px;
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -493,4 +514,8 @@ dialog > form {
 
 .shareLinkBtn {
 	padding: 8px;
+}
+
+.notFound {
+	font-size: 48px;
 }
