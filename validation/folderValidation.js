@@ -15,7 +15,7 @@ const validateNewFolderName = [
 	body("newFolderName")
 		.notEmpty()
 		.escape()
-		.isAlphanumeric("en-US", { ignore: "_- " })
+		.isAlphanumeric("en-US", { ignore: "_- ()" })
 		.withMessage("New folder name can only contain letters and numbers"),
 
 	lengthValidator("newFolderName", { min: 1, max: 50 }),
