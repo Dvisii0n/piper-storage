@@ -80,3 +80,8 @@ export function getFullSharedFoldersData(folders, folderId, duration) {
 
 	return [rootShareId, fullShareData];
 }
+
+export function getCleanReferer(referer) {
+	const arr = referer.split("?");
+	return arr[0];
+}
