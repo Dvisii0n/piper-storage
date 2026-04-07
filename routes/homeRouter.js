@@ -10,6 +10,7 @@ import {
 	validateDeleteFolder,
 	validateEditFolder,
 	validateGetFolder,
+	validateGetHome,
 	validateShareId,
 } from "../validation/folderValidation.js";
 import {
@@ -24,7 +25,7 @@ const homeRouter = new Router();
 
 homeRouter.use(checkAuth);
 
-homeRouter.get("/", homeController.getHome);
+homeRouter.get("/", validateGetHome, homeController.getHome);
 
 //files
 
