@@ -2,7 +2,7 @@ import { matchedData, validationResult } from "express-validator";
 import { prisma } from "../lib/prisma.js";
 import { supabaseDelete } from "../lib/supabase.js";
 import BASE_URL from "../utils/baseUrl.js";
-import { getFullSharedFoldersData } from "../utils/utils.js";
+import { getCleanReferer, getFullSharedFoldersData } from "../utils/utils.js";
 
 async function verifyOwnership(userId, folderId) {
 	const { ownerId } = await prisma.folder.findUnique({
@@ -102,7 +102,7 @@ async function createFolder(req, res, next) {
 			}
 		});
 
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}
@@ -149,7 +149,7 @@ async function deleteFolder(req, res, next) {
 			await supabaseDelete(fileURLs);
 		}
 
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}
@@ -180,7 +180,7 @@ async function editFolder(req, res, next) {
 				name: newFolderName,
 			},
 		});
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}

@@ -7,6 +7,7 @@ import {
 	supabaseUpload,
 } from "../lib/supabase.js";
 import path from "path";
+import { getCleanReferer } from "../utils/utils.js";
 
 async function fileUpload(req, res, next) {
 	try {
@@ -58,7 +59,7 @@ async function fileUpload(req, res, next) {
 
 		// //register on db
 		await prisma.file.createMany({ data: filesData });
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}
@@ -127,7 +128,7 @@ async function deleteFile(req, res, next) {
 
 		await prisma.file.delete({ where: { id: fileId } });
 		await supabaseDelete([data.fileUrl]);
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}
@@ -160,7 +161,7 @@ async function editFile(req, res, next) {
 			data: { name: newFileName },
 		});
 
-		res.redirect(req.get("referer"));
+		res.redirect(getCleanReferer(req.get("referer")));
 	} catch (err) {
 		next(err);
 	}
